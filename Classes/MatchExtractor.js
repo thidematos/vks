@@ -1,4 +1,5 @@
 const eventIterator = require('../utils/eventIterator');
+const Analytics = require('./Analytics');
 const InGameFrame = require('./InGameFrame');
 const Participant = require('./Participant');
 
@@ -30,9 +31,16 @@ class MatchExtractor {
       .#getWardKill()
       .#getEliteMonsterKill()
       .#getLevelUp()
-      .#getChampionKill();
+      .#getChampionKill()
+      .#getAnalytics();
 
     return this;
+  }
+
+  #getAnalytics() {
+    const analyticsAPI = new Analytics(this.#events);
+
+    analyticsAPI.getDragonStats();
   }
 
   #getPlateDestructionEvents() {
@@ -40,8 +48,6 @@ class MatchExtractor {
       this.frames,
       this.#events.turretPlateDestroyed.key
     );
-
-    console.log(this.#events.turretPlateDestroyed.list);
 
     return this;
   }
@@ -52,8 +58,6 @@ class MatchExtractor {
       this.#events.buildingDestroyed.key
     );
 
-    console.log(this.#events.buildingDestroyed.list);
-
     return this;
   }
 
@@ -62,8 +66,6 @@ class MatchExtractor {
       this.frames,
       this.#events.wardPlaced.key
     );
-
-    console.log(this.#events.wardPlaced.list);
 
     return this;
   }
@@ -74,8 +76,6 @@ class MatchExtractor {
       this.#events.wardKill.key
     );
 
-    console.log(this.#events.wardKill.list);
-
     return this;
   }
 
@@ -84,8 +84,6 @@ class MatchExtractor {
       this.frames,
       this.#events.eliteMonsterKill.key
     );
-
-    console.log(this.#events.eliteMonsterKill.list);
 
     return this;
   }
@@ -96,8 +94,6 @@ class MatchExtractor {
       this.#events.levelUp.key
     );
 
-    console.log(this.#events.levelUp.list);
-
     return this;
   }
 
@@ -106,8 +102,6 @@ class MatchExtractor {
       this.frames,
       this.#events.championKill.key
     );
-
-    console.log(this.#events.championKill.list);
 
     return this;
   }
