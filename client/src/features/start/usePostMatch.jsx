@@ -3,15 +3,14 @@ import toast from "react-hot-toast";
 import CustomToast from "../../ui/CustomToast";
 import { createMatchApi } from "../../services/matchApi";
 import { useNavigate } from "react-router-dom";
-import { useJsonUpload } from "../../context/JsonUploadProvider";
-import { useEffect } from "react";
-import { useLoader } from "../../context/LoaderProvider";
 import { useIsLoading } from "../../hooks/useIsLoading";
+import { useRemote } from "./../../context/RemoteProvider";
 
 function usePostMatch() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { toggleLoader } = useLoader();
+
+  const { setRemoteState } = useRemote();
 
   const { mutate: createMatch, isPending: isCreatingMatch } = useMutation({
     mutationFn: (match) => createMatchApi(match),
@@ -22,6 +21,8 @@ function usePostMatch() {
       ));
 
       queryClient.invalidateQueries(["matchs"]);
+
+      setRemoteState(data);
 
       navigate(
         `/match-details/${data.gameId}/${data.participants.at(0).puuid}`,

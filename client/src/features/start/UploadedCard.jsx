@@ -7,20 +7,23 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
-function UploadedCard() {
-  const { json, deleteJson } = useJsonUpload();
+function UploadedCard({ type }) {
+  const { json, jsonl, deleteJson, deleteJsonl } = useJsonUpload();
 
-  if (!json) return null;
+  const files = {
+    json: json,
+    jsonl: jsonl,
+  };
 
   return (
     <Card>
       <div className="flex flex-row items-center gap-4 text-slate-700">
         <FontAwesomeIcon icon={faFileLines} className="" />
-        <p className="cursor-default text-xs">{json.name}</p>
+        <p className="cursor-default text-xs">{files[type]?.name}</p>
         <FontAwesomeIcon
           icon={faTrash}
           className="cursor-pointer text-red-700 shadow-xl"
-          onClick={deleteJson}
+          onClick={type === "jsonl" ? deleteJsonl : deleteJson}
         />
       </div>
     </Card>

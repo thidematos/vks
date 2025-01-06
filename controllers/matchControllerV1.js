@@ -13,13 +13,28 @@ exports.createMatch = catchAsync(async (req, res, next) => {
 
   const jsonConverted = JSON.parse(stringJson);
 
-  const matchAPI = new MatchExtractor(jsonConverted);
+  const matchAPI = new MatchExtractor(jsonConverted)
+    .defineParticipantsFrames()
+    .getEvents();
 
   const jsonlConverted = matchAPI.convertJsonl(stringJsonl);
 
+  const createdMatch = await Match.create({
+    gameId: matchAPI.gameId,
+    timestamp: matchAPI.timestamp,
+    participants: matchAPI.participants,
+  });
+
   res.status(200).json({
     status: 'success',
-    data: {},
+    data: {
+      match,
+      participants: matchAPI.participants,
+      gameId: matchAPI.gameId,
+      frames: matchAPI.frames,
+      timestamp: matchAPI.timestamp,
+      dragonStats: matchAPI.getFirstDragonKillTimestamp(),
+    },
   });
 });
 

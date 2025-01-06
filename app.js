@@ -20,7 +20,7 @@ const limiter = rateLimit({
 
 const app = express();
 
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json({ limit: '500mb' }));
 
 app.use(cookieParser());
 

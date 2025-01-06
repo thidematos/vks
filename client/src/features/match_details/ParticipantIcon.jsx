@@ -25,14 +25,6 @@ function ParticipantIcon({ participant }) {
           />
         </NavLink>
         <p className="text-sm">{participant.participantId}</p>
-        {/*  <div
-          className={`${isHovered ? "absolute" : "hidden"} left-[120%] top-[-5%] rounded-lg bg-purple-600/50 p-4 shadow`}
-        >
-          <p className="w-[200px] text-[10px]">
-            Player PUUID: {participant.puuid}
-          </p>
-        </div>
-        */}
       </div>
     </>
   );

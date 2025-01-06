@@ -1,12 +1,13 @@
 import axios from "axios";
 import { format } from "date-fns";
 
-export async function createMatchApi(match) {
+export async function createMatchApi({ stringJson, stringJsonl }) {
   const res = await axios.post("/api/v1/match", {
-    match: match,
+    match: {
+      stringJson,
+      stringJsonl,
+    },
   });
-
-  console.log(format(res.data.data.timestamp, "dd/MM/yyyy - HH:mm"));
 
   return res.data.data;
 }

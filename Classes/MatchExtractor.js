@@ -24,6 +24,24 @@ class MatchExtractor {
     this.timestamp = match.frames.at(0).events.at(0).realTimestamp;
   }
 
+  convertJsonl(jsonl) {
+    const jsonlObjects = [];
+    const lines = jsonl.split('\n');
+
+    let count = 0;
+    lines.forEach((line) => {
+      try {
+        jsonlObjects.push(JSON.parse(line));
+      } catch (err) {
+        return null;
+      }
+
+      count++;
+    });
+
+    return jsonlObjects;
+  }
+
   getEvents() {
     this.#getPlateDestructionEvents()
       .#getTurretKill()
@@ -31,16 +49,17 @@ class MatchExtractor {
       .#getWardKill()
       .#getEliteMonsterKill()
       .#getLevelUp()
-      .#getChampionKill()
-      .#getAnalytics();
+      .#getChampionKill();
 
     return this;
   }
 
-  #getAnalytics() {
+  getFirstDragonKillTimestamp() {
     const analyticsAPI = new Analytics(this.#events);
 
-    analyticsAPI.getDragonStats();
+    const firstDragonKillTimestamp = analyticsAPI.getDragonStats();
+
+    return firstDragonKillTimestamp;
   }
 
   #getPlateDestructionEvents() {
