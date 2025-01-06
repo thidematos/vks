@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const matchRouter = require('./routers/matchRouter');
+const lolRouter = require('./routers/lolRouter');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -43,6 +44,7 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV === 'production') app.use('/api', limiter);
 
 app.use('/api/v1/match', matchRouter);
+app.use('/api/v1/lol', lolRouter);
 
 //Routing react-route-dom
 app.all('/*', (req, res, next) => {

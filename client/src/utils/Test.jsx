@@ -45,7 +45,12 @@ function Test() {
           <p className="text-lg text-purple-700">
             Actual content: <span>{index}</span>
           </p>
-          <Button onClick={() => console.log(jsonlContent[index])}>
+          <Button
+            onClick={() => {
+              setIndex((state) => state + 1);
+              console.log(jsonlContent[index]);
+            }}
+          >
             <p className="text-xl">Next</p>
           </Button>
         </div>
