@@ -1,3 +1,4 @@
+const { format } = require('date-fns/format');
 const { getSplashLink } = require('../services/lolApi');
 
 class MatchHelpers {
@@ -21,6 +22,10 @@ class MatchHelpers {
     );
 
     return player;
+  }
+
+  formatGameTimestamp(timestamp) {
+    return format(timestamp, 'mm:ss');
   }
 
   getRotationPicks(rotation) {

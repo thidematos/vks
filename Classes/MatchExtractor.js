@@ -27,6 +27,8 @@ class MatchExtractor {
       gameInfo: 'game_info',
       turretPlateDestroyed: 'turret_plate_destroyed',
       turretPlateGoldEarned: 'turret_plate_gold_earned',
+      wardPlaced: 'ward_placed',
+      wardKilled: 'ward_killed',
     },
   };
 
@@ -58,6 +60,11 @@ class MatchExtractor {
     goldEarned: null,
   };
 
+  wards = {
+    placed: null,
+    killed: null,
+  };
+
   gameSettings = {
     gameID: null,
     timestamp: null,
@@ -87,7 +94,10 @@ class MatchExtractor {
     this.#getParticipants();
     this.#getBanList();
     this.#getPicks();
-    this.#getPlates();
+    this.#getPlatesDestroyed();
+    this.#getPlatesGoldEarned();
+    this.#getWardsPlaced();
+    this.#getWardsKilled();
 
     console.log(
       `Match started at: ${format(
@@ -97,7 +107,49 @@ class MatchExtractor {
     );
   }
 
-  #getPlates() {
+  #getWardsPlaced() {
+    //Important properties: gameTime, placer, position, wardType
+    const wardsPlacedEvents = this.#eventsJsonl.filter(
+      (event) => event[this.#rfc.propertyName] === this.#rfc.types.wardPlaced
+    );
+
+    this.wards.placed = wardsPlacedEvents.map((event) => {
+      return {
+        gameTimestamp: event.gameTime,
+        formattedTimestamp: this.#helper.formatGameTimestamp(event.gameTime),
+        placer: this.#helper.participantIDToPlayer(event.placer, [
+          ...this.participants.teamOne.players,
+          ...this.participants.teamTwo.players,
+        ]),
+        position: event.position,
+        wardType: event.wardType === 'unknown' ? 'zombieWard' : event.wardType,
+      };
+    });
+  }
+
+  #getWardsKilled() {
+    //Important properties: gameTime, killer, position, wardType
+    const wardsKilledEvents = this.#eventsJsonl.filter(
+      (event) => event[this.#rfc.propertyName] === this.#rfc.types.wardKilled
+    );
+
+    this.wards.killed = wardsKilledEvents.map((event) => {
+      return {
+        gameTimestamp: event.gameTime,
+        formattedTimestamp: this.#helper.formatGameTimestamp(event.gameTime),
+        killer: this.#helper.participantIDToPlayer(event.killer, [
+          ...this.participants.teamOne.players,
+          ...this.participants.teamTwo.players,
+        ]),
+        position: event.position,
+        wardType: event.wardType === 'unknown' ? 'zombieWard' : event.wardType,
+      };
+    });
+
+    console.log(this.wards.killed);
+  }
+
+  #getPlatesDestroyed() {
     //Important properties: assistants, lane, lastHitter, teamID, gameTime
     const platesDestroyedEvents = this.#eventsJsonl.filter(
       (event) =>
@@ -120,11 +172,28 @@ class MatchExtractor {
         formattedTimestamp: format(event.gameTime, 'mm:ss'),
       };
     });
+  }
 
-    const plagesGoldEarnedEvents = this.#eventsJsonl.filter(
+  #getPlatesGoldEarned() {
+    //Important properties: bounty, gameTime, participantID, teamID (who destroyed)
+
+    const platesGoldEarnedEvents = this.#eventsJsonl.filter(
       (event) =>
         event[this.#rfc.propertyName] === this.#rfc.types.turretPlateGoldEarned
     );
+
+    this.plates.goldEarned = platesGoldEarnedEvents.map((event) => {
+      return {
+        goldBounty: event.bounty,
+        gameTimestamp: event.gameTime,
+        formattedTimestamp: format(event.gameTime, 'mm:ss'),
+        earner: this.#helper.participantIDToPlayer(event.participantID, [
+          ...this.participants.teamOne.players,
+          ...this.participants.teamTwo.players,
+        ]),
+        teamIDWhoDestroyed: event.teamID,
+      };
+    });
   }
 
   #getPatch() {

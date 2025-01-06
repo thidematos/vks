@@ -17,13 +17,13 @@ exports.createMatch = catchAsync(async (req, res, next) => {
     champions: req.champions,
   });
 
-  console.log(matchAPI.plates.destroyed);
-
   res.status(200).json({
     status: 'success',
     data: {
       bans: matchAPI.bans,
       picks: matchAPI.picks,
+      plates: matchAPI.plates,
+      wards: matchAPI.wards,
       participants: matchAPI.participants,
       gameSettings: matchAPI.gameSettings,
     },
