@@ -9,6 +9,7 @@ import MatchDetails from "./pages/MatchDetails";
 import Test from "./utils/Test";
 import Button from "./ui/Button";
 import DragonStats from "./pages/DragonStats";
+import New from "./features/match_details/New";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,10 +30,7 @@ function App() {
               <Route path="/" element={<Layout />}>
                 <Route path="new-match" element={<Start />} />
                 <Route path="matchs" element={<Test />} />
-                <Route
-                  path="match-details/:gameId/:puuid"
-                  element={<MatchDetails />}
-                />
+                <Route path="match-details/:gameId" element={<New />} />
                 <Route
                   path="match-details/:gameId/dragon-stats"
                   element={<DragonStats />}

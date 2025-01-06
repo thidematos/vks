@@ -11,10 +11,16 @@ function RemoteProvider({ children }) {
     localStorage.setItem("remote-data", JSON.stringify(remoteData));
   }
 
+  function getRemoteState() {
+    const data = localStorage.getItem("remote-data");
+
+    return data;
+  }
+
   console.log(data);
 
   return (
-    <RemoteContext.Provider value={{ data, setRemoteState }}>
+    <RemoteContext.Provider value={{ data, setRemoteState, getRemoteState }}>
       {children}
     </RemoteContext.Provider>
   );

@@ -11,13 +11,22 @@ exports.createMatch = catchAsync(async (req, res, next) => {
   if (!stringJson || !stringJsonl)
     return next(new AppError('It seems there is no match to analyze', 400));
 
-  const matchAPI = new MatchExtractor({ stringJson, stringJsonl }).getBanList(
-    req.champions
-  );
+  const matchAPI = new MatchExtractor({
+    stringJson,
+    stringJsonl,
+    champions: req.champions,
+  });
+
+  console.log(matchAPI.plates.destroyed);
 
   res.status(200).json({
     status: 'success',
-    data: {},
+    data: {
+      bans: matchAPI.bans,
+      picks: matchAPI.picks,
+      participants: matchAPI.participants,
+      gameSettings: matchAPI.gameSettings,
+    },
   });
 });
 

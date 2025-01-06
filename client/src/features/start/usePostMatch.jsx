@@ -24,9 +24,7 @@ function usePostMatch() {
 
       setRemoteState(data);
 
-      navigate(
-        `/match-details/${data.gameId}/${data.participants.at(0).puuid}`,
-      );
+      navigate(`/match-details/${data.gameSettings.gameID}`);
     },
     onError: (error) =>
       toast.custom((t) => (
