@@ -10,6 +10,18 @@ class MatchHelpers {
   firstRotationTurns = 6;
   secondRotationTurns = 4;
 
+  jungleCamps = {
+    minor: [
+      'gromp',
+      'wolf',
+      'raptor',
+      'krug',
+      'blueCamp',
+      'redCamp',
+      'scuttleCrab',
+    ],
+  };
+
   #champions;
 
   constructor(champions) {

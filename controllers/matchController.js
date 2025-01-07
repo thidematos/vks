@@ -26,6 +26,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
       wards: matchAPI.wards,
       participants: matchAPI.participants,
       gameSettings: matchAPI.gameSettings,
+      jungleMonstersKills: matchAPI.jungleMonstersKills,
     },
   });
 });

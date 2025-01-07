@@ -29,6 +29,7 @@ class MatchExtractor {
       turretPlateGoldEarned: 'turret_plate_gold_earned',
       wardPlaced: 'ward_placed',
       wardKilled: 'ward_killed',
+      epicMonsterKill: 'epic_monster_kill',
     },
   };
 
@@ -65,6 +66,21 @@ class MatchExtractor {
     killed: null,
   };
 
+  jungleMonstersKills = {
+    minorCamps: {
+      krug: null,
+      raptor: null,
+      gromp: null,
+      wolf: null,
+    },
+    buffCamps: {
+      blueCamp: null,
+      redCamp: null,
+    },
+    scuttleCrab: null,
+    dragons: null,
+  };
+
   gameSettings = {
     gameID: null,
     timestamp: null,
@@ -98,6 +114,7 @@ class MatchExtractor {
     this.#getPlatesGoldEarned();
     this.#getWardsPlaced();
     this.#getWardsKilled();
+    this.#getEpicKills();
 
     console.log(
       `Match started at: ${format(
@@ -105,6 +122,62 @@ class MatchExtractor {
         "dd/MM/yyyy '---' hh:mm:ss"
       )}`
     );
+  }
+
+  #getEpicKills() {
+    const epicKillsEvents = this.#eventsJsonl.filter(
+      (event) =>
+        event[this.#rfc.propertyName] === this.#rfc.types.epicMonsterKill
+    );
+
+    this.#helper.jungleCamps.minor.forEach((minorCamp) => {
+      this.#getJungleMinorCamps(epicKillsEvents, minorCamp);
+    });
+
+    console.log(
+      epicKillsEvents.filter((event) => event.monsterType === 'VoidGrub')
+    );
+
+    //console.log(this.jungleMonstersKills.minorCamps.wolf);
+  }
+
+  #getJungleMinorCamps(epicKillsEvents, monsterType) {
+    const jungleEvents = epicKillsEvents.filter(
+      (event) => event.monsterType === monsterType
+    );
+
+    const mappedEvent = jungleEvents.map((event) => {
+      return {
+        assistants: event.assistants,
+        bountyGold: event.bountyGold,
+        gameTimestamp: event.gameTime,
+        formattedTimestamp: this.#helper.formatGameTimestamp(event.gameTime),
+        globalGold: event.globalGold,
+        inEnemyJungle: event.inEnemyJungle,
+        killType: event.killType,
+        killer: this.#helper.participantIDToPlayer(event.killer, [
+          ...this.participants.teamOne.players,
+          ...this.participants.teamTwo.players,
+        ]),
+        killerGold: event.killerGold,
+        killerTeamID: event.killerTeamID,
+        localGold: event.localGold,
+        monsterType: event.monsterType,
+      };
+    });
+
+    if (monsterType === 'blueCamp' || monsterType === 'redCamp') {
+      this.jungleMonstersKills.buffCamps[monsterType] = mappedEvent;
+      return;
+    }
+
+    if (monsterType === 'scuttleCrab') {
+      this.jungleMonstersKills.scuttleCrab = mappedEvent;
+      return;
+    }
+
+    //Important properties: assistants, bountyGold, gameTime, globalGold, inEnemyJungle, killType, killer, killerGold, killerTeamID, localGold, monsterType,
+    this.jungleMonstersKills.minorCamps[monsterType] = mappedEvent;
   }
 
   #getWardsPlaced() {
@@ -145,8 +218,6 @@ class MatchExtractor {
         wardType: event.wardType === 'unknown' ? 'zombieWard' : event.wardType,
       };
     });
-
-    console.log(this.wards.killed);
   }
 
   #getPlatesDestroyed() {
@@ -315,4 +386,11 @@ module.exports = MatchExtractor;
   'building_gold_grant',
   'building_destroyed',
   'game_end'
+*/
+/*
+  
+  'VoidGrub',
+  'dragon',
+  'riftHerald',
+  'baron'
 */
