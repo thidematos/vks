@@ -26,6 +26,8 @@ function Test() {
     setJsonlContent(objects);
   };
 
+  console.log(jsonlContent);
+
   if (jsonlContent.length !== 0 && index === 0) {
     console.log(jsonlContent[0]);
   }

@@ -9,6 +9,7 @@ router
   .post(
     lolController.getVersions({ currentVersion: true, endpoint: false }),
     lolController.getChampions({ endpoint: false }),
+    matchController.extractMatch,
     matchController.createMatch
   )
   .get(matchController.getMatchs)

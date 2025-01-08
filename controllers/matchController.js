@@ -3,7 +3,7 @@ const MatchExtractor = require('./../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
 
-exports.createMatch = catchAsync(async (req, res, next) => {
+exports.extractMatch = catchAsync(async (req, res, next) => {
   const { match } = req.body;
 
   const { stringJson, stringJsonl } = match;
@@ -32,6 +32,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
       positions: matchAPI.positions,
       gold: matchAPI.gold,
       criticalTimes: matchAPI.criticalTimes,
+      perMinuteStats: matchAPI.perMinuteStats,
     },
   });
 });

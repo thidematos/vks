@@ -161,6 +161,155 @@ class MatchHelpers {
     };
   }
 
+  getPerMinuteStats(teamEvents) {
+    const stats = teamEvents.map((event) => {
+      return {
+        ...event,
+        players: event.players.map((player) => {
+          return {
+            xp: player.XP,
+            level: player.level,
+            puuid: player.puuid,
+            stats: this.statsTypesOfScreenshots.reduce((acc, typeStr) => {
+              const formattedStr = typeStr
+                .toLowerCase()
+                .split('_')
+                .map((str, ind) =>
+                  ind === 0 ? str : `${str.at(0).toUpperCase()}${str.slice(1)}`
+                )
+                .join('');
+
+              acc[formattedStr] = player.stats.find(
+                (stat) => stat.name === typeStr
+              ).value;
+
+              return acc;
+            }, {}),
+          };
+        }),
+      };
+    });
+
+    return stats;
+  }
+
+  getXpDiff(atTimeStructure) {
+    const teams = ['teamOne', 'teamTwo'];
+    const xps = {
+      teamOne: null,
+      teamTwo: null,
+      diff: 0,
+      winningTeam: null,
+    };
+
+    teams.forEach((teamStr) => {
+      xps[teamStr] = atTimeStructure[teamStr].teamParticipants.reduce(
+        (acc, player) => acc + player.xp,
+        0
+      );
+    });
+
+    xps.diff = xps.teamOne - xps.teamTwo;
+    xps.winningTeam =
+      xps.diff === 0
+        ? 'even'
+        : atTimeStructure[
+            xps.diff < 0 ? 'teamTwo' : 'teamOne'
+          ].teamParticipants.at(0).teamID;
+
+    return xps;
+  }
+
+  getGoldDiff(atTimeStructure) {
+    const goldTeamOne = atTimeStructure.teamOne.totals.totalGold;
+    const goldTeamTwo = atTimeStructure.teamTwo.totals.totalGold;
+
+    const diff = goldTeamOne - goldTeamTwo;
+
+    return {
+      diff,
+      teamOne: goldTeamOne,
+      teamTwo: goldTeamTwo,
+      winningTeamID:
+        diff === 0
+          ? 'even'
+          : atTimeStructure[
+              diff < 0 ? 'teamTwo' : 'teamOne'
+            ].teamParticipants.at(0).teamID,
+    };
+  }
+
+  getCsDiff(atTimeStructure) {
+    const reduceCsTotal = (team) =>
+      team.teamParticipants.reduce(
+        (acc, player) => acc + player.minionsKilled,
+        0
+      );
+
+    const csTeamOne = reduceCsTotal(atTimeStructure.teamOne);
+
+    const csTeamTwo = reduceCsTotal(atTimeStructure.teamTwo);
+
+    const diff = csTeamOne - csTeamTwo;
+
+    const cs = {
+      teamOne: csTeamOne,
+      teamTwo: csTeamTwo,
+      diff,
+      winningTeamID:
+        diff === 0
+          ? 'even'
+          : atTimeStructure[
+              diff < 0 ? 'teamTwo' : 'teamOne'
+            ].teamParticipants.at(0).teamID,
+    };
+
+    return cs;
+  }
+
+  getTakedownsDiff(atTimeStructure) {
+    const teamsStr = ['teamOne', 'teamTwo'];
+
+    const takedowns = {
+      teamOne: null,
+      teamTwo: null,
+      diff: {
+        kills: null,
+        deaths: null,
+        assists: null,
+      },
+    };
+
+    teamsStr.forEach((team) => {
+      takedowns[team] = {
+        kills: atTimeStructure[team].totals.championsKills,
+        deaths: atTimeStructure[team].totals.deaths,
+        assists: atTimeStructure[team].totals.assists,
+      };
+    });
+
+    const takedownsStr = ['kills', 'deaths', 'assists'];
+
+    const diffs = {};
+
+    takedownsStr.forEach((takedownTypeStr) => {
+      diffs[takedownTypeStr] =
+        takedowns.teamOne[takedownTypeStr] - takedowns.teamTwo[takedownTypeStr];
+
+      takedowns.diff[takedownTypeStr] = {
+        diff: diffs[takedownTypeStr],
+        winningTeamID:
+          diffs[takedownTypeStr] === 0
+            ? 'even'
+            : atTimeStructure[
+                diffs[takedownTypeStr] < 0 ? 'teamTwo' : 'teamOne'
+              ].teamParticipants.at(0).teamID,
+      };
+    });
+
+    return takedowns;
+  }
+
   getGoldAtTime(events, timeStr) {
     const stateAtTime = events.find(
       (event) => event.formattedTimestamp === timeStr

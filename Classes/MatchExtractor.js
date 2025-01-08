@@ -130,6 +130,18 @@ class MatchExtractor {
     at25: { teamOne: null, teamTwo: null },
   };
 
+  atTimeDiffs = {
+    at10: null,
+    at15: null,
+    at20: null,
+    at25: null,
+  };
+
+  perMinuteStats = {
+    teamOne: null,
+    teamTwo: null,
+  };
+
   gameSettings = {
     gameID: null,
     timestamp: null,
@@ -167,8 +179,9 @@ class MatchExtractor {
     this.#getBuildingsDestroyed();
     this.#getSplitScore();
     this.#getMapPositions();
-    this.#getGoldDiff();
+    this.#getGoldAtTime();
     this.#getCriticalTimeStates();
+    this.#getStatsPerMinute();
 
     console.log(
       `Match started at: ${format(
@@ -179,8 +192,6 @@ class MatchExtractor {
   }
 
   #getCriticalTimeStates() {
-    //gold, xp, cs, kills, assists, deaths
-
     const timesStr = this.#helper.criticalTimes;
 
     const stateEvents = this.#eventsJsonl.filter(
@@ -216,9 +227,31 @@ class MatchExtractor {
         ),
       };
     });
+
+    this.#getAtTimeDiffs();
   }
 
-  #getGoldDiff() {
+  #getAtTimeDiffs() {
+    //gold, xp, cs, kills, assists, deaths
+    this.#helper.criticalTimes.forEach((time) => {
+      const timeStr = `at${time.slice(0, 2)}`;
+      const currentTimeIteration = this.criticalTimes[timeStr];
+      //goldDiff
+      currentTimeIteration.goldDiff =
+        this.#helper.getGoldDiff(currentTimeIteration);
+
+      currentTimeIteration.xpDiff =
+        this.#helper.getXpDiff(currentTimeIteration);
+
+      currentTimeIteration.csDiff =
+        this.#helper.getCsDiff(currentTimeIteration);
+
+      currentTimeIteration.takedownsDiff =
+        this.#helper.getTakedownsDiff(currentTimeIteration);
+    });
+  }
+
+  #getGoldAtTime() {
     const [teamOneStatesEvents, teamTwoStatesEvents] =
       this.#creteStateEventsForEachTeam();
 
@@ -235,6 +268,22 @@ class MatchExtractor {
         str
       );
     });
+  }
+
+  #getStatsPerMinute() {
+    const [teamOneStatesEvents, teamTwoStatesEvents] =
+      this.#creteStateEventsForEachTeam();
+
+    const filterFullMinutes = (events) =>
+      events.filter((event) => event.formattedTimestamp.endsWith('00'));
+
+    const teamOneMinuteEvents = filterFullMinutes(teamOneStatesEvents);
+    const teamTwoMinuteEvents = filterFullMinutes(teamTwoStatesEvents);
+
+    this.perMinuteStats.teamOne =
+      this.#helper.getPerMinuteStats(teamOneMinuteEvents);
+    this.perMinuteStats.teamTwo =
+      this.#helper.getPerMinuteStats(teamTwoMinuteEvents);
   }
 
   #creteStateEventsForEachTeam() {
