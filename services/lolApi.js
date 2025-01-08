@@ -16,6 +16,10 @@ exports.getChampions = async function (version) {
   return res.data.data;
 };
 
+exports.getMap = function () {
+  return 'https://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png';
+};
+
 exports.getSplashLink = function (championName) {
   return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championName}_0.jpg`;
 };

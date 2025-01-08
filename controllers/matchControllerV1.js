@@ -1,5 +1,5 @@
 const catchAsync = require('../utils/catchAsync');
-const MatchExtractor = require('./../classes/MatchExtractor');
+const MatchExtractor = require('../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
 

@@ -1,5 +1,5 @@
 const catchAsync = require('../utils/catchAsync');
-const MatchExtractor = require('./../classes/MatchExtractor');
+const MatchExtractor = require('./../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
 
@@ -27,6 +27,11 @@ exports.createMatch = catchAsync(async (req, res, next) => {
       participants: matchAPI.participants,
       gameSettings: matchAPI.gameSettings,
       jungleMonstersKills: matchAPI.jungleMonstersKills,
+      buildingsDestroyed: matchAPI.buildingsDestroyed,
+      splitScore: matchAPI.splitScores,
+      positions: matchAPI.positions,
+      gold: matchAPI.gold,
+      criticalTimes: matchAPI.criticalTimes,
     },
   });
 });
