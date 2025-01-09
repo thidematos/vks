@@ -1,6 +1,6 @@
 function Title({ text, variation = "main" }) {
   const variations = {
-    main: "text-4xl text-purple-900",
+    main: "text-5xl text-purple-900",
     secondary: "text-2xl text-purple-800",
     tertiary: "text-lg text-purple-700",
   };

@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
 import { useSidebar } from "../../context/SidebarProvider";
 
-function DragonIcon({ className }) {
+function MatchIcon({ className }) {
   const { isOpen } = useSidebar();
 
   return (
     <div className={className}>
       <img
-        src="/dragon-icon.jpg"
+        src="/matchs-icon.png"
         className={`rounded-full ${isOpen ? "max-w-[60px]" : "w-full"}`}
       />
     </div>
@@ -19,12 +18,10 @@ function Writing() {
   if (!isOpen) return null;
 
   return (
-    <div className="text-center font-vks text-xl text-gray-200">
-      Dragon Stats
-    </div>
+    <p className="text-center font-vks text-xl text-gray-200">All Matchs</p>
   );
 }
 
-DragonIcon.Writing = Writing;
+MatchIcon.Writing = Writing;
 
-export default DragonIcon;
+export default MatchIcon;

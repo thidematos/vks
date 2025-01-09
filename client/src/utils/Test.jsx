@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../ui/Button";
+import { format } from "date-fns";
 
 function Test() {
   const [file, setFile] = useState(false);
   const [jsonlContent, setJsonlContent] = useState([]);
   const [index, setIndex] = useState(0);
+  const [filter, setFilter] = useState("game_info");
 
   const fileReader = new FileReader();
 
@@ -23,14 +25,25 @@ function Test() {
       count++;
     });
     console.log(count);
+    objects.map((event) => {
+      if (event.gameTime) {
+        event.formattedTimestamp = format(event.gameTime, "mm:ss");
+      }
+
+      return event;
+    });
     setJsonlContent(objects);
   };
-
-  //console.log(jsonlContent);
 
   if (jsonlContent.length !== 0 && index === 0) {
     console.log(jsonlContent[0]);
   }
+
+  useEffect(() => {
+    if (jsonlContent.length === 0) return;
+
+    console.log(jsonlContent.filter((event) => event.rfc461Schema === filter));
+  }, [filter, jsonlContent]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-6">
@@ -56,6 +69,20 @@ function Test() {
             <p className="text-xl">Next</p>
           </Button>
         </div>
+      )}
+      {jsonlContent.length !== 0 && (
+        <select
+          defaultValue={"game_info"}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {[...new Set(jsonlContent.map((event) => event.rfc461Schema))].map(
+            (event, ind) => (
+              <option key={ind} value={event}>
+                {event}
+              </option>
+            ),
+          )}
+        </select>
       )}
     </div>
   );

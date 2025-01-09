@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useSidebar } from "../context/SidebarProvider";
 import DragonIcon from "../features/dragon_stats/DragonIcon";
 import Logo from "./Logo";
+import MatchIcon from "../features/matchs/MatchIcon";
 
 function Sidebar({ children }) {
   const { isOpen, toggleSidebar } = useSidebar();
@@ -36,19 +37,33 @@ function Header() {
   );
 }
 
-function Content() {
+function SidebarIcon({ children, to }) {
   const { isOpen } = useSidebar();
-  const { gameId } = useParams();
 
   return (
-    <div className="flex h-[80%] flex-col items-center justify-start">
-      <Link
-        to={`/match-details/${gameId}/dragon-stats`}
-        className={`flex flex-row items-center justify-start ${isOpen && "gap-2"}`}
-      >
-        <DragonIcon className={`rounded-full border border-purple-600`} />
+    <Link
+      to={to}
+      className={`flex w-full flex-row items-center justify-start ${isOpen && "gap-2"}`}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function Content() {
+  const iconClassname = "rounded-full border border-purple-600";
+
+  return (
+    <div className="flex h-[80%] flex-col items-center justify-start gap-6">
+      <SidebarIcon to={"/"}>
+        <DragonIcon className={iconClassname} />
         <DragonIcon.Writing />
-      </Link>
+      </SidebarIcon>
+
+      <SidebarIcon to={"/matchs"}>
+        <MatchIcon className={iconClassname} />
+        <MatchIcon.Writing />
+      </SidebarIcon>
     </div>
   );
 }

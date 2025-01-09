@@ -39,6 +39,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
     buildingsDestroyed: matchAPI.buildingsDestroyed,
     splitScore: matchAPI.splitScores,
     bans: matchAPI.bans,
+    featUpdates: matchAPI.featUpdates,
   });
 
   res.status(200).json({
@@ -57,6 +58,7 @@ exports.createMatch = catchAsync(async (req, res, next) => {
       gold: matchAPI.gold,
       criticalTimes: matchAPI.criticalTimes,
       perMinuteStats: matchAPI.perMinuteStats,
+      featUpdates: matchAPI.featUpdates,
     },
   });
 });

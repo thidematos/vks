@@ -24,7 +24,7 @@ function usePostMatch() {
 
       setRemoteState(data);
 
-      navigate(`/match-details/${data.gameSettings.gameID}`);
+      navigate(`/matchs`);
     },
     onError: (error) =>
       toast.custom((t) => (

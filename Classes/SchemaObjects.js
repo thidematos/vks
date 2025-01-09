@@ -116,6 +116,7 @@ class SchemaObjects {
           level: Number,
           puuid: String,
           xp: Number,
+          stackedBloodyPetals: Number,
           stats: {
             assists: Number,
             championsKilled: Number,
@@ -222,6 +223,18 @@ class SchemaObjects {
       ...this.#monsterData,
       dragonType: String,
     },
+    atakhanData: {
+      ...this.#monsterData,
+      spawnPosition: this.#position,
+    },
+  };
+
+  featUpdate = {
+    featType: String,
+    gameTimestamp: Number,
+    formattedTimestamp: String,
+    stacks: Number,
+    teamIDWhoScored: Number,
   };
 
   wards = {

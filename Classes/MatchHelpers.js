@@ -28,6 +28,7 @@ class MatchHelpers {
     'riftHerald',
     'baron',
     'dragon',
+    'RuinousAtakhan',
   ];
 
   buildingTypes = ['turret', 'inhibitor', 'nexus'];
@@ -48,10 +49,22 @@ class MatchHelpers {
     'TOTAL_DAMAGE_DEALT_TO_CHAMPIONS',
   ];
 
+  #bloodyPetals = { id: 2293028288, name: 'stackedBloodyPetals' };
+
   #champions;
 
   constructor(champions) {
     this.#champions = champions;
+  }
+
+  getFeatData(event) {
+    return {
+      featType: event.featType,
+      gameTimestamp: event.gameTime,
+      formattedTimestamp: format(event.gameTime, 'mm:ss'),
+      stacks: event.stacks,
+      teamIDWhoScored: event.teamID,
+    };
   }
 
   getStateOfEachTeam(stateEvents, teamID) {
@@ -170,6 +183,11 @@ class MatchHelpers {
             xp: player.XP,
             level: player.level,
             puuid: player.puuid,
+            stackedBloodyPetals: player.stackingBuffs
+              ? player.stackingBuffs.find(
+                  (buff) => buff.id === this.#bloodyPetals.id
+                )?.stacks || 0
+              : 0,
             stats: this.statsTypesOfScreenshots.reduce((acc, typeStr) => {
               const formattedStr = typeStr
                 .toLowerCase()
@@ -212,7 +230,7 @@ class MatchHelpers {
     xps.diff = xps.teamOne - xps.teamTwo;
     xps.winningTeam =
       xps.diff === 0
-        ? 'even'
+        ? 0
         : atTimeStructure[
             xps.diff < 0 ? 'teamTwo' : 'teamOne'
           ].teamParticipants.at(0).teamID;
@@ -232,7 +250,7 @@ class MatchHelpers {
       teamTwo: goldTeamTwo,
       winningTeamID:
         diff === 0
-          ? 'even'
+          ? 0
           : atTimeStructure[
               diff < 0 ? 'teamTwo' : 'teamOne'
             ].teamParticipants.at(0).teamID,
@@ -258,7 +276,7 @@ class MatchHelpers {
       diff,
       winningTeamID:
         diff === 0
-          ? 'even'
+          ? 0
           : atTimeStructure[
               diff < 0 ? 'teamTwo' : 'teamOne'
             ].teamParticipants.at(0).teamID,
@@ -300,7 +318,7 @@ class MatchHelpers {
         diff: diffs[takedownTypeStr],
         winningTeamID:
           diffs[takedownTypeStr] === 0
-            ? 'even'
+            ? 0
             : atTimeStructure[
                 diffs[takedownTypeStr] < 0 ? 'teamTwo' : 'teamOne'
               ].teamParticipants.at(0).teamID,

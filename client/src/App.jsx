@@ -11,6 +11,7 @@ import Button from "./ui/Button";
 import DragonStats from "./pages/DragonStats";
 import New from "./features/match_details/New";
 import Map from "./features/match_details/Map";
+import Matchs from "./pages/Matchs";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,9 +31,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route path="new-match" element={<Start />} />
-                <Route path="matchs" element={<Test />} />
-                <Route path="match-details/:gameId" element={<New />} />
+                <Route path="matchs" element={<Matchs />} />
                 <Route path="map" element={<Map />} />
+                <Route path="test-jsonl" element={<Test />} />
                 <Route
                   path="match-details/:gameId/dragon-stats"
                   element={<DragonStats />}

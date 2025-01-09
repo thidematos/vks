@@ -62,6 +62,8 @@ const matchScheema = new mongoose.Schema({
     riftHerald: [schemaObjects.jungleMonstersKills.monsterData],
     scuttleCrab: [schemaObjects.jungleMonstersKills.monsterData],
     voidGrubs: [schemaObjects.jungleMonstersKills.monsterData],
+    ruinousAtakhan: [schemaObjects.jungleMonstersKills.atakhanData],
+    voraciousAtakhan: [schemaObjects.jungleMonstersKills.atakhanData],
   },
   gold: {
     at10: schemaObjects.goldAtTime,
@@ -74,6 +76,9 @@ const matchScheema = new mongoose.Schema({
     name: String,
     patch: String,
     timestamp: String,
+    gameDurationTimestamp: Number,
+    gameDuration: String,
+    winningTeam: Number,
   },
   criticalTimes: {
     at10: schemaObjects.criticalTimes.time,
@@ -93,6 +98,11 @@ const matchScheema = new mongoose.Schema({
   splitScore: {
     teamOne: [schemaObjects.splitScore.score],
     teamTwo: [schemaObjects.splitScore.score],
+  },
+  featUpdates: {
+    kFirstBlood: [schemaObjects.featUpdate],
+    kEpicKill: [schemaObjects.featUpdate],
+    kFirstTurret: [schemaObjects.featUpdate],
   },
 });
 

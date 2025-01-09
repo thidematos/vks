@@ -1,6 +1,7 @@
 const Parser = require('./Parser');
 const MatchHelpers = require('./MatchHelpers');
 const { format } = require('date-fns');
+const lolApi = require('./../services/lolApi');
 
 const parser = new Parser();
 
@@ -33,6 +34,8 @@ class MatchExtractor {
       buildingDestroyed: 'building_destroyed',
       buildingGoldGrant: 'building_gold_grant',
       statsUpdate: 'stats_update',
+      gameEnd: 'game_end',
+      featUpdated: 'feat_updated',
     },
   };
 
@@ -86,6 +89,8 @@ class MatchExtractor {
     riftHerald: null,
     baron: null,
     dragon: null,
+    ruinousAtakhan: null,
+    voraciousAtakhan: null,
   };
 
   buildingsDestroyed = {
@@ -142,16 +147,26 @@ class MatchExtractor {
     teamTwo: null,
   };
 
+  featUpdates = {
+    kFirstBlood: [],
+    kEpicKill: [],
+    kFirstTurret: [],
+  };
+
   gameSettings = {
     gameID: null,
     timestamp: null,
     name: null,
     patch: null,
+    gameDurationTimestamp: null,
+    gameDuration: null,
+    winningTeam: null,
   };
 
   constructor({ stringJson, stringJsonl, champions }) {
     this.#eventsJsonl = parser.jsonl(stringJsonl);
     this.#endDetailsJson = parser.json(stringJson);
+
     this.#champions = champions;
     this.#setSettings();
   }
@@ -168,6 +183,7 @@ class MatchExtractor {
     this.gameSettings.patch = this.#getPatch();
 
     //Game Info
+    this.#getGameEnd();
     this.#getParticipants();
     this.#getBanList();
     this.#getPicks();
@@ -182,6 +198,7 @@ class MatchExtractor {
     this.#getGoldAtTime();
     this.#getCriticalTimeStates();
     this.#getStatsPerMinute();
+    this.#getFeatUpdated();
 
     console.log(
       `Match started at: ${format(
@@ -189,6 +206,30 @@ class MatchExtractor {
         "dd/MM/yyyy '---' hh:mm:ss"
       )}`
     );
+  }
+
+  #getFeatUpdated() {
+    const lostStackID = 1001;
+
+    const featUpdateEvents = this.#eventsJsonl
+      .filter(
+        (event) => event[this.#rfc.propertyName] === this.#rfc.types.featUpdated
+      )
+      .filter((event) => event.stacks !== lostStackID);
+
+    featUpdateEvents.forEach((event) => {
+      this.featUpdates[event.featType].push(this.#helper.getFeatData(event));
+    });
+  }
+
+  #getGameEnd() {
+    const gameEndEvent = this.#eventsJsonl.find(
+      (event) => event[this.#rfc.propertyName] === this.#rfc.types.gameEnd
+    );
+
+    this.gameSettings.gameDurationTimestamp = gameEndEvent.gameTime;
+    this.gameSettings.gameDuration = format(gameEndEvent.gameTime, 'mm:ss');
+    this.gameSettings.winningTeam = gameEndEvent.winningTeam;
   }
 
   #getCriticalTimeStates() {
@@ -449,6 +490,13 @@ class MatchExtractor {
         jungleData.dragonType = event.dragonType;
       }
 
+      if (
+        monsterType === 'RuinousAtakhan' ||
+        monsterType === 'VoraciousAtakhan'
+      ) {
+        jungleData.spawnPosition = event.position;
+      }
+
       return jungleData;
     });
 
@@ -479,6 +527,14 @@ class MatchExtractor {
 
       case 'dragon':
         this.jungleMonstersKills.dragon = mappedEvent;
+        return;
+
+      case 'RuinousAtakhan':
+        this.jungleMonstersKills.ruinousAtakhan = mappedEvent;
+        return;
+
+      case 'VoraciousAtakhan':
+        this.jungleMonstersKills.voraciousAtakhan = mappedEvent;
         return;
 
       default:
@@ -698,4 +754,5 @@ module.exports = MatchExtractor;
   'building_gold_grant',
   'building_destroyed',
   'game_end'
+  feat_updated
 */
