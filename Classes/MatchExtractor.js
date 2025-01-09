@@ -540,7 +540,7 @@ class MatchExtractor {
         lane: event.lane,
         lastHitter:
           event.lastHitter === 0
-            ? 'minion'
+            ? { participantID: null, puuid: null, summonerName: 'minion' }
             : this.#helper.participantIDToPlayer(
                 event.lastHitter,
                 this.participants.allPlayers

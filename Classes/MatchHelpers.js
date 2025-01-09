@@ -112,7 +112,7 @@ class MatchHelpers {
 
         return {
           formattedTimestamp: event.formattedTimestamp,
-          splitScore: (sumDistance / 4).toFixed(2),
+          splitScore: Number((sumDistance / 4).toFixed(2)),
         };
       });
 

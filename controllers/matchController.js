@@ -17,6 +17,30 @@ exports.extractMatch = catchAsync(async (req, res, next) => {
     champions: req.champions,
   });
 
+  req.matchAPI = matchAPI;
+
+  next();
+});
+
+exports.createMatch = catchAsync(async (req, res, next) => {
+  const { matchAPI } = req;
+
+  const newMatch = await Match.create({
+    wards: matchAPI.wards,
+    positions: matchAPI.positions,
+    plates: matchAPI.plates,
+    picks: matchAPI.picks,
+    perMinuteStats: matchAPI.perMinuteStats,
+    participants: matchAPI.participants,
+    jungleMonstersKills: matchAPI.jungleMonstersKills,
+    gold: matchAPI.gold,
+    gameSettings: matchAPI.gameSettings,
+    criticalTimes: matchAPI.criticalTimes,
+    buildingsDestroyed: matchAPI.buildingsDestroyed,
+    splitScore: matchAPI.splitScores,
+    bans: matchAPI.bans,
+  });
+
   res.status(200).json({
     status: 'success',
     data: {
