@@ -5,13 +5,12 @@ import { SidebarProvider } from "./context/SidebarProvider";
 import { LoaderProvider } from "./context/LoaderProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import MatchDetails from "./pages/MatchDetails";
 import Test from "./utils/Test";
-import Button from "./ui/Button";
 import DragonStats from "./pages/DragonStats";
-import New from "./features/match_details/New";
-import Map from "./features/match_details/Map";
+import Map from "./not_used/match_details/Map";
 import Matchs from "./pages/Matchs";
+import Players from "./pages/Players";
+import MatchStats from "./pages/MatchStats";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +30,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route path="new-match" element={<Start />} />
+                <Route path="players" element={<Players />} />
+                <Route path="/matchs/:matchID" element={<MatchStats />} />
                 <Route path="matchs" element={<Matchs />} />
                 <Route path="map" element={<Map />} />
                 <Route path="test-jsonl" element={<Test />} />

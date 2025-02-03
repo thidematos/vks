@@ -17,8 +17,6 @@ function Map() {
     z: 8000,
   };
 
-  console.log(position);
-
   function setMoving() {
     const id = setInterval(() => {
       if (counter <= parsed.canyonPathing.length) {

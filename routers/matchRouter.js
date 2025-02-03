@@ -10,6 +10,7 @@ router
     lolController.getVersions({ currentVersion: true, endpoint: false }),
     lolController.getChampions({ endpoint: false }),
     matchController.extractMatch,
+    matchController.lookForNewPlayers,
     matchController.createMatch
   )
   .get(matchController.getMatchs)

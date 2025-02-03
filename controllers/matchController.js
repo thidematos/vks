@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const MatchExtractor = require('./../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
+const Player = require('../models/playerModel');
 
 exports.extractMatch = catchAsync(async (req, res, next) => {
   const { match } = req.body;
@@ -15,6 +16,7 @@ exports.extractMatch = catchAsync(async (req, res, next) => {
     stringJson,
     stringJsonl,
     champions: req.champions,
+    version: req.versions,
   });
 
   req.matchAPI = matchAPI;
@@ -63,6 +65,38 @@ exports.createMatch = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.lookForNewPlayers = catchAsync(async (req, res, next) => {
+  const matchAPI = req.matchAPI;
+
+  const dbPlayers = await Player.find({});
+
+  const toAddDb = [];
+
+  matchAPI.participants.allPlayers.forEach((reqPlayer) => {
+    const curPlayer = dbPlayers.find(
+      (dbPlayer) => dbPlayer.puuid === reqPlayer.puuid
+    );
+
+    if (!curPlayer) return toAddDb.push(reqPlayer);
+  });
+
+  const promises = toAddDb.map(async (player) => {
+    const createdPlayer = await Player.create({
+      puuid: player.puuid,
+      summonerName: player.summonerName,
+      lane: null,
+    });
+
+    console.log(`Created new player: ${createdPlayer.summonerName}`);
+
+    return createdPlayer;
+  });
+
+  await Promise.all(promises);
+
+  next();
+});
+
 exports.getMatchs = catchAsync(async (req, res, next) => {
   const matchs = await Match.find({});
 
@@ -76,6 +110,7 @@ exports.getMatchs = catchAsync(async (req, res, next) => {
 
 exports.clearMatchs = catchAsync(async (req, res, next) => {
   await Match.deleteMany({});
+  await Player.deleteMany({});
 
   res.status(204).json({
     status: 'success',

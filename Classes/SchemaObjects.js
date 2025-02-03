@@ -9,6 +9,7 @@ class SchemaObjects {
     participantID: Number,
     puuid: String,
     summonerName: String,
+    champion: this.#championInfo,
   };
 
   #position = {

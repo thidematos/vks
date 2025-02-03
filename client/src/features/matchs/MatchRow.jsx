@@ -1,5 +1,20 @@
-function MatchRow({ children }) {
-  return <tr className="row-span-1 grid h-[60px] grid-cols-10">{children}</tr>;
+import { useNavigate } from "react-router-dom";
+
+function MatchRow({ children, matchID }) {
+  const navigate = useNavigate();
+
+  function goToMatchDetails() {
+    navigate(`/matchs/${matchID}`);
+  }
+
+  return (
+    <tr
+      className="row-span-1 grid h-[60px] grid-cols-10"
+      onClick={goToMatchDetails}
+    >
+      {children}
+    </tr>
+  );
 }
 
 function Name({ children }) {

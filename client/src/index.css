@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,14 @@
 
 .markup {
   @apply border border-red-500;
+}
+
+.markup2 {
+  @apply border border-blue-500;
+}
+
+.markup3 {
+  @apply border border-green-500;
 }
 
 @keyframes enter {
@@ -47,6 +55,11 @@
 .centerX {
   left: 50%;
   transform: translate(-50%, 0);
+}
+
+.centerY {
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .padSidebarSize {
@@ -97,4 +110,17 @@
   background: #04aa6d; /* Green background */
   cursor: pointer; /* Cursor on hover */
   border-radius: 50%;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  border-radius: 100px;
+}
+
+..table-scroll::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+}
+
+.table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(148, 163, 184) rgb(203, 213, 225);
 }

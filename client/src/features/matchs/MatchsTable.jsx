@@ -14,14 +14,14 @@ function MatchsTable() {
       <MatchRow.Header />
       <tbody className="markup row-span-1">
         {matchs.map((match) => (
-          <MatchRow key={match._id}>
+          <MatchRow key={match._id} matchID={match._id}>
             <MatchRow.Teams>
               {match.participants.teamOne.team} vs{" "}
               {match.participants.teamTwo.team}
             </MatchRow.Teams>
             <MatchRow.Name>{match.gameSettings.name}</MatchRow.Name>
             <MatchRow.Date>
-              {format(match.gameSettings.timestamp, "dd/MM/yyyy '---' hh:mm")}
+              {format(match.gameSettings.timestamp, "dd/MM/yyyy '---' HH:mm")}
             </MatchRow.Date>
           </MatchRow>
         ))}

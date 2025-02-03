@@ -7,6 +7,7 @@ const parser = new Parser();
 
 class MatchExtractor {
   #champions;
+  #version;
 
   #helper;
 
@@ -163,16 +164,17 @@ class MatchExtractor {
     winningTeam: null,
   };
 
-  constructor({ stringJson, stringJsonl, champions }) {
+  constructor({ stringJson, stringJsonl, champions, version }) {
     this.#eventsJsonl = parser.jsonl(stringJsonl);
     this.#endDetailsJson = parser.json(stringJson);
 
     this.#champions = champions;
+    this.#version = version;
     this.#setSettings();
   }
 
   #setSettings() {
-    this.#helper = new MatchHelpers(this.#champions);
+    this.#helper = new MatchHelpers(this.#champions, this.#version);
 
     const firstEvent = this.#eventsJsonl.at(0);
 

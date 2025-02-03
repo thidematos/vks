@@ -52,9 +52,11 @@ class MatchHelpers {
   #bloodyPetals = { id: 2293028288, name: 'stackedBloodyPetals' };
 
   #champions;
+  #version;
 
-  constructor(champions) {
+  constructor(champions, version) {
     this.#champions = champions;
+    this.#version = version;
   }
 
   getFeatData(event) {
@@ -418,7 +420,7 @@ class MatchHelpers {
     const championInfo = {
       key: Number(currentChampion.key),
       name: currentChampion.name,
-      splash: getSplashLink(currentChampion.id),
+      splash: getSplashLink(currentChampion.id, this.#version),
     };
 
     return championInfo;
@@ -430,12 +432,17 @@ class MatchHelpers {
 
   getTeamPlayers(team, gameInfoParticipants) {
     const players = team.map((player) => {
+      const currentPlayerGameInfo = gameInfoParticipants.find(
+        (participant) => participant.puuid === player.puuid
+      );
+
+      const champion = this.#champions[currentPlayerGameInfo.championName];
+
       return {
         summonerName: player.summonerName,
         puuid: player.puuid,
-        participantID: gameInfoParticipants.find(
-          (participant) => participant.puuid === player.puuid
-        ).participantID,
+        participantID: currentPlayerGameInfo.participantID,
+        champion: this.getChampionBasedOnKey(Number(champion.key)),
       };
     });
 

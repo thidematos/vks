@@ -9,6 +9,7 @@ const path = require('path');
 
 const matchRouter = require('./routers/matchRouter');
 const lolRouter = require('./routers/lolRouter');
+const playerRouter = require('./routers/playerRouter');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -45,6 +46,7 @@ if (process.env.NODE_ENV === 'production') app.use('/api', limiter);
 
 app.use('/api/v1/match', matchRouter);
 app.use('/api/v1/lol', lolRouter);
+app.use('/api/v1/players', playerRouter);
 
 //Routing react-route-dom
 app.all('/*', (req, res, next) => {

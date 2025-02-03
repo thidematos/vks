@@ -9,8 +9,6 @@ function Upload() {
   const { stepper } = useStepper();
   const { analyze } = useJsonUpload();
 
-  console.log(stepper);
-
   return (
     <div className="relative flex w-full grow flex-col items-center justify-center gap-8">
       <Stepper />

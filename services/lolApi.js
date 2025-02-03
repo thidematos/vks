@@ -20,6 +20,7 @@ exports.getMap = function () {
   return 'https://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png';
 };
 
-exports.getSplashLink = function (championName) {
-  return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championName}_0.jpg`;
+exports.getSplashLink = function (championName, version) {
+  return `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${championName}.png`;
+  //return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championName}_0.jpg`;
 };

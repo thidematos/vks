@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMatchsApi } from "../../services/matchApi";
-import { useIsLoading } from "./../../hooks/useIsLoading";
+import { useIsLoading } from "../../hooks/useIsLoading";
 
 function useGetMatchs() {
   const {
