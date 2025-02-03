@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import useGetMatchs from "../matchs/useGetMatchs";
+import useGetMatchs from "../../matchs/useGetMatchs";
 import { format } from "date-fns";
 
 function Date() {

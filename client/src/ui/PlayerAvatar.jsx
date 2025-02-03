@@ -1,11 +1,19 @@
-function PlayerAvatar({ isBlue, championSplash, summonerName }) {
+function PlayerAvatar({ isBlue, player, lane, isActive, onChangeActive }) {
   return (
-    <div className={`flex flex-col items-center justify-center gap-1`}>
+    <div
+      className={`relative flex cursor-pointer flex-col items-center justify-center gap-2`}
+      onClick={() => onChangeActive()}
+    >
+      <h6
+        className={`${isActive ? "font-bold text-purple-700" : "text-slate-700"}`}
+      >
+        {player.summonerName.split(" ").at(1).toUpperCase()}
+      </h6>
       <img
-        src={championSplash}
-        className={` ${isBlue ? "border-blueTeam" : "border-redTeam"} size-[50px] rounded-full border-[2px]`}
+        src={player.champion.splash}
+        className={` ${isBlue ? "border-blueTeam" : "border-redTeam"} ${isActive ? "scale-125" : "scale-100"} size-[50px] rounded-full border-[2px] transition-all`}
       />
-      <h6 className="text-sm">{summonerName.split(" ").at(1)}</h6>
+      <p className="text-xs">{lane.toUpperCase()}</p>
     </div>
   );
 }

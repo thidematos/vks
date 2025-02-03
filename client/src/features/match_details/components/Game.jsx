@@ -1,5 +1,5 @@
 import { useQueries } from "@tanstack/react-query";
-import useGetMatchs from "../matchs/useGetMatchs";
+import useGetMatchs from "../../matchs/useGetMatchs";
 import { useParams } from "react-router-dom";
 
 function Game() {
