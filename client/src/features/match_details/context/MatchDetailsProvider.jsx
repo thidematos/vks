@@ -1,16 +1,20 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useCallback, useContext, useReducer } from "react";
+import GraphicXP from "../components/graphics/GraphicXP";
 
 const MatchDetailsContext = createContext(null);
 
 const initialState = {
-  selectedMetric: "level",
+  selectedMetric: "xp",
+  metrics: {
+    xp: <GraphicXP />,
+  },
   teamOne: {
     id: 100,
-    activePlayer: 0,
+    activePlayer: null,
   },
   teamTwo: {
     id: 200,
-    activePlayer: 0,
+    activePlayer: null,
   },
 };
 
@@ -30,24 +34,24 @@ function reducer(state, action) {
 }
 
 function MatchDetailsProvider({ children }) {
-  const [{ teamOne, teamTwo, selectedMetric }, dispatch] = useReducer(
+  const [{ teamOne, teamTwo, selectedMetric, metrics }, dispatch] = useReducer(
     reducer,
     initialState,
   );
 
-  function changeActivePlayer(teamID, index) {
+  const changeActivePlayer = useCallback((teamID, puuid) => {
     dispatch({
       type: "change/activePlayer",
       payload: {
         teamID,
-        toBeActivePlayer: index,
+        toBeActivePlayer: puuid,
       },
     });
-  }
+  }, []);
 
   return (
     <MatchDetailsContext.Provider
-      value={{ teamOne, teamTwo, changeActivePlayer }}
+      value={{ teamOne, teamTwo, changeActivePlayer, selectedMetric, metrics }}
     >
       {children}
     </MatchDetailsContext.Provider>

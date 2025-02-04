@@ -111,7 +111,7 @@ class MatchExtractor {
   };
 
   gold = {
-    at10: {
+    at07: {
       teamOne: null,
       teamTwo: null,
     },
@@ -130,7 +130,7 @@ class MatchExtractor {
   };
 
   criticalTimes = {
-    at10: { teamOne: null, teamTwo: null },
+    at07: { teamOne: null, teamTwo: null },
     at15: { teamOne: null, teamTwo: null },
     at20: { teamOne: null, teamTwo: null },
     at25: { teamOne: null, teamTwo: null },

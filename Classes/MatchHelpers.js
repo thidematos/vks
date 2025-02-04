@@ -33,7 +33,7 @@ class MatchHelpers {
 
   buildingTypes = ['turret', 'inhibitor', 'nexus'];
 
-  criticalTimes = ['10:00', '15:00', '20:00', '25:00'];
+  criticalTimes = ['07:00', '15:00', '20:00', '25:00'];
 
   statsTypesOfScreenshots = [
     'MINIONS_KILLED',

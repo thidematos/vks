@@ -66,7 +66,7 @@ const matchScheema = new mongoose.Schema({
     voraciousAtakhan: [schemaObjects.jungleMonstersKills.atakhanData],
   },
   gold: {
-    at10: schemaObjects.goldAtTime,
+    at07: schemaObjects.goldAtTime,
     at15: schemaObjects.goldAtTime,
     at20: schemaObjects.goldAtTime,
     at25: schemaObjects.goldAtTime,
@@ -81,7 +81,7 @@ const matchScheema = new mongoose.Schema({
     winningTeam: Number,
   },
   criticalTimes: {
-    at10: schemaObjects.criticalTimes.time,
+    at07: schemaObjects.criticalTimes.time,
     at15: schemaObjects.criticalTimes.time,
     at20: schemaObjects.criticalTimes.time,
     at25: schemaObjects.criticalTimes.time,

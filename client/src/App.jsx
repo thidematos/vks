@@ -11,6 +11,8 @@ import Matchs from "./pages/Matchs";
 import Players from "./pages/Players";
 import MatchDetails from "./pages/MatchDetails";
 
+import "swiper/css";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

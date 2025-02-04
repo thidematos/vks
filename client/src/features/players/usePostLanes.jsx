@@ -14,7 +14,6 @@ function usePostLanes() {
   const { mutate: postLanes, isPending: isPostingLanes } = useMutation({
     mutationFn: (lanes) => postPlayersLanesAPI(lanes),
     onSuccess: (data) => {
-      console.log(data);
       queryClient.invalidateQueries(["players"]);
 
       toast.custom((t) => (

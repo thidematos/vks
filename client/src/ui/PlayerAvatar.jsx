@@ -5,15 +5,15 @@ function PlayerAvatar({ isBlue, player, lane, isActive, onChangeActive }) {
       onClick={() => onChangeActive()}
     >
       <h6
-        className={`${isActive ? "font-bold text-purple-700" : "text-slate-700"}`}
+        className={`${isActive ? "font-bold text-purple-700" : "text-slate-700"} text-sm`}
       >
-        {player.summonerName.split(" ").at(1).toUpperCase()}
+        {player.summonerName?.split(" ")?.at(1)?.toUpperCase()}
       </h6>
       <img
         src={player.champion.splash}
-        className={` ${isBlue ? "border-blueTeam" : "border-redTeam"} ${isActive ? "scale-125" : "scale-100"} size-[50px] rounded-full border-[2px] transition-all`}
+        className={` ${isBlue ? "border-blueTeam" : "border-redTeam"} ${isActive ? "scale-125" : "scale-100"} size-[40px] rounded-full border-[2px] transition-all`}
       />
-      <p className="text-xs">{lane.toUpperCase()}</p>
+      <p className="text-xs">{lane?.toUpperCase()}</p>
     </div>
   );
 }
