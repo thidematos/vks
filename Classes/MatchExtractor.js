@@ -13,8 +13,6 @@ class MatchExtractor {
 
   #eventsJsonl;
 
-  #endDetailsJson;
-
   #gameStages = {
     preChampSelect: 'PRE_CHAMP_SELECT',
     postChampSelect: 'POST_CHAMP_SELECT',
@@ -166,7 +164,6 @@ class MatchExtractor {
 
   constructor({ stringJson, stringJsonl, champions, version }) {
     this.#eventsJsonl = parser.jsonl(stringJsonl);
-    this.#endDetailsJson = parser.json(stringJson);
 
     this.#champions = champions;
     this.#version = version;

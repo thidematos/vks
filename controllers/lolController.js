@@ -5,10 +5,15 @@ exports.getVersions = ({ endpoint, currentVersion }) => {
   return catchAsync(async (req, res, next) => {
     const versions = await lolApi.getVersions();
 
-    const version = currentVersion ? versions.at(0) : versions;
+    const version = currentVersion
+      ? versions.at(0)
+      : versions.find((version) => version.startsWith(req.matchEvents.version));
+
+    console.log(version);
 
     if (!endpoint) {
-      req.versions = version;
+      req.version = version;
+      req.matchEvents.definePatch(version);
       return next();
     }
 
@@ -23,12 +28,12 @@ exports.getVersions = ({ endpoint, currentVersion }) => {
 
 exports.getChampions = ({ endpoint }) => {
   return catchAsync(async (req, res, next) => {
-    const currentVersion = req.versions;
+    const currentVersion = req.version;
 
     const champions = await lolApi.getChampions(currentVersion);
 
     if (!endpoint) {
-      req.champions = champions;
+      req.matchEvents.defineChampions(champions);
       return next();
     }
 

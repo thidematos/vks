@@ -7,11 +7,17 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    lolController.getVersions({ currentVersion: true, endpoint: false }),
+    matchController.buildMatchEvents,
+    matchController.newMatchDetails,
+    lolController.getVersions({ currentVersion: false, endpoint: false }),
     lolController.getChampions({ endpoint: false }),
+    matchController.defineMatchDetailsData
+
+    /*  
+    
     matchController.extractMatch,
     matchController.lookForNewPlayers,
-    matchController.createMatch
+    matchController.createMatch */
   )
   .get(matchController.getMatchs)
   .delete(matchController.clearMatchs);

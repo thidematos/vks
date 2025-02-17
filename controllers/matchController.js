@@ -3,17 +3,48 @@ const MatchExtractor = require('./../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
 const Player = require('../models/playerModel');
+const Parser = require('../Classes/Parser');
+const MatchEvents = require('../Classes/MatchEvents');
+const MatchDetails = require('../Classes/MatchDetails');
 
-exports.extractMatch = catchAsync(async (req, res, next) => {
+const parser = new Parser();
+
+exports.buildMatchEvents = catchAsync(async (req, res, next) => {
   const { match } = req.body;
 
-  const { stringJson, stringJsonl } = match;
+  const { stringJsonl } = match;
 
-  if (!stringJson || !stringJsonl)
+  if (!stringJsonl)
     return next(new AppError('It seems there is no match to analyze', 400));
 
+  const matchEvents = parser.jsonl(stringJsonl);
+
+  req.matchEvents = matchEvents;
+
+  next();
+});
+
+exports.newMatchDetails = catchAsync(async (req, res, next) => {
+  const matchEvents = new MatchEvents(req.matchEvents);
+  const matchDetails = new MatchDetails(matchEvents);
+
+  req.matchDetails = matchDetails;
+  req.matchEvents = matchEvents;
+
+  next();
+});
+
+exports.defineMatchDetailsData = catchAsync(async (req, res, next) => {
+  req.matchDetails.defineData();
+
+  // next();
+  res.status(200).json({
+    status: 'success',
+  });
+});
+
+exports.extractMatch = catchAsync(async (req, res, next) => {
   const matchAPI = new MatchExtractor({
-    stringJson,
     stringJsonl,
     champions: req.champions,
     version: req.versions,
