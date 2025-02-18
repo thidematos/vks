@@ -1,5 +1,11 @@
+const { format } = require('date-fns');
+const helpers = require('./../utils/helpers');
+
 class MatchEvents {
   #rfcPropertyName = 'rfc461Schema';
+  #TEAM_LENGTH = 5;
+  #BLUE_SIDE_ID = 100;
+  #RED_SIDE_ID = 200;
   #champions = [];
   #patch;
   #lanes = ['top', 'jungle', 'mid', 'adc', 'supp'];
@@ -36,7 +42,7 @@ class MatchEvents {
         case 'stats_update':
           this.stats_update.push(event);
           break;
-        case 'ward_place':
+        case 'ward_placed':
           this.ward_placed.push(event);
           break;
         case 'ward_killed':
@@ -87,8 +93,9 @@ class MatchEvents {
 
   definePatch(patch) {
     this.#patch = patch;
-    console.log(this.#patch);
   }
+
+  //API
 
   #findChampion(championName) {
     const curChampion = this.#champions[championName];
@@ -102,12 +109,11 @@ class MatchEvents {
     };
   }
 
-  getParticipants() {
-    const TEAM_LENGTH = 5;
+  get participants() {
     const participantsData = this.game_info.at(0).participants;
 
-    const rawBlueSide = participantsData.slice(0, TEAM_LENGTH);
-    const rawRedSide = participantsData.slice(TEAM_LENGTH);
+    const rawBlueSide = participantsData.slice(0, this.#TEAM_LENGTH);
+    const rawRedSide = participantsData.slice(this.#TEAM_LENGTH);
 
     const blueSide = [];
     const redSide = [];
@@ -123,7 +129,7 @@ class MatchEvents {
       };
     };
 
-    for (let ind = 0; ind < TEAM_LENGTH; ind++) {
+    for (let ind = 0; ind < this.#TEAM_LENGTH; ind++) {
       blueSide.push(createParticipantData(rawBlueSide[ind], ind));
       redSide.push(createParticipantData(rawRedSide[ind], ind));
     }
@@ -134,6 +140,77 @@ class MatchEvents {
       all: blueSide.concat(redSide),
     };
   }
+
+  get gameSettings() {
+    const gameEndEvent = this.game_end.at(0);
+
+    return {
+      winningTeam: gameEndEvent.winningTeam,
+      date: this.game_info.at(0).rfc460Timestamp,
+      gameID: gameEndEvent.gameID,
+      name: gameEndEvent.gameName,
+      durationTimestamp: gameEndEvent.gameTime,
+      duration: format(gameEndEvent.gameTime, 'mm:ss'),
+      patch: this.#patch,
+    };
+  }
+
+  get wards() {
+    return {
+      placed: this.ward_placed.map((event) => {
+        return {
+          timestamp: event.gameTime,
+          formattedTimestamp: format(event.gameTime, 'mm:ss'),
+          wardType: event.wardType === 'unknown' ? 'zombie' : event.wardType,
+          position: event.position,
+          placerParticipantID: event.placer,
+        };
+      }),
+      killed: this.ward_killed.map((event) => {
+        return {
+          timestamp: event.gameTime,
+          formattedTimestamp: format(event.gameTime, 'mm:ss'),
+          killerParticipantID: event.killer,
+          position: event.position,
+          wardType: event.wardType === 'unknown' ? 'zombie' : event.wardType,
+        };
+      }),
+    };
+  }
+
+  get statsUpdate() {
+    const stats = [];
+
+    this.stats_update.forEach((event) => {
+      const formattedTimestamp = format(event.gameTime, 'mm:ss');
+
+      if (!formattedTimestamp.endsWith('00')) return;
+
+      const blueSide = event.participants
+        .slice(0, this.#TEAM_LENGTH)
+        .map(helpers.extractData);
+      const redSide = event.participants
+        .slice(this.#TEAM_LENGTH)
+        .map(helpers.extractData);
+
+      stats.push({
+        timestamp: event.gameTime,
+        formattedTimestamp: formattedTimestamp,
+        blueSide: {
+          individual: blueSide,
+          team: event.teams.find((team) => team.teamID === this.#BLUE_SIDE_ID),
+        },
+        redSide: {
+          individual: redSide,
+          team: event.teams.find((team) => team.teamID === this.#RED_SIDE_ID),
+        },
+      });
+    });
+
+    return stats;
+  }
+
+  get featUpdate() {}
 }
 
 module.exports = MatchEvents;

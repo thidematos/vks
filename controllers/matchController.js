@@ -29,7 +29,6 @@ exports.newMatchDetails = catchAsync(async (req, res, next) => {
   const matchDetails = new MatchDetails(matchEvents);
 
   req.matchDetails = matchDetails;
-  req.matchEvents = matchEvents;
 
   next();
 });

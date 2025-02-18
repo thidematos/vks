@@ -7,13 +7,15 @@ exports.getVersions = ({ endpoint, currentVersion }) => {
 
     const version = currentVersion
       ? versions.at(0)
-      : versions.find((version) => version.startsWith(req.matchEvents.version));
+      : versions.find((version) =>
+          version.startsWith(req.matchDetails.MatchEvents.version)
+        );
 
     console.log(version);
 
     if (!endpoint) {
       req.version = version;
-      req.matchEvents.definePatch(version);
+      req.matchDetails.MatchEvents.definePatch(version);
       return next();
     }
 
@@ -33,7 +35,7 @@ exports.getChampions = ({ endpoint }) => {
     const champions = await lolApi.getChampions(currentVersion);
 
     if (!endpoint) {
-      req.matchEvents.defineChampions(champions);
+      req.matchDetails.MatchEvents.defineChampions(champions);
       return next();
     }
 
