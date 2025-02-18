@@ -9,6 +9,8 @@ class MatchDetails {
   epic_kills = null;
   champion_kills = null;
   champion_select = null;
+  bricks = null;
+  destroyed_buildings = null;
 
   constructor(MatchEvents) {
     this.MatchEvents = MatchEvents;
@@ -23,6 +25,8 @@ class MatchDetails {
     this.#defineEpicKills();
     this.#defineChampionKills();
     this.#defineChampSelect();
+    this.#defineBricks();
+    this.#defineDestroyedBuildings();
   }
 
   #defineParticipants() {
@@ -55,6 +59,15 @@ class MatchDetails {
 
   #defineChampSelect() {
     this.champion_select = this.MatchEvents.champion_select;
+  }
+
+  #defineBricks() {
+    this.bricks = this.MatchEvents.bricks;
+  }
+
+  #defineDestroyedBuildings() {
+    this.destroyed_buildings = this.MatchEvents.destroyed_buildings;
+    console.log(this.destroyed_buildings);
   }
 }
 

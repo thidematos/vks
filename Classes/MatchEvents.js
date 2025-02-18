@@ -1,4 +1,3 @@
-const { is } = require('date-fns/locale');
 const helpers = require('./../utils/helpers');
 
 class MatchEvents {
@@ -442,6 +441,63 @@ class MatchEvents {
     });
 
     return selection;
+  }
+
+  get bricks() {
+    const bricks = {
+      blueSide: [],
+      redSide: [],
+    };
+
+    this.#turret_plate_destroyed.forEach((event) => {
+      const destroyedData = {
+        timestamp: event.gameTime,
+        formattedTimestamp: helpers.formatTimestamp(event.gameTime),
+        lane: event.lane,
+        lastHitterParticipantID: event.lastHitter,
+        belongsToTeamID: event.teamID,
+      };
+
+      if (event.teamID === this.#BLUE_SIDE_ID) {
+        bricks.blueSide.push(destroyedData);
+      }
+
+      if (event.teamID === this.#RED_SIDE_ID) {
+        bricks.redSide.push(destroyedData);
+      }
+    });
+
+    return bricks;
+  }
+
+  get destroyed_buildings() {
+    const destroyedBuildings = {
+      blueSide: [],
+      redSide: [],
+    };
+
+    this.#building_destroyed.forEach((event) => {
+      const destroyedData = {
+        assistantsParticipantID: event.assistants,
+        buildingType: event.buildingType,
+        timestamp: event.gameTime,
+        formattedTimestamp: helpers.formatTimestamp(event.gameTime),
+        lane: event.lane,
+        lastHitterParticipantID: event.lastHitter,
+        belongsToTeamID: event.teamID,
+        turretTier: event.turretTier,
+      };
+
+      if (event.teamID === this.#BLUE_SIDE_ID) {
+        destroyedBuildings.blueSide.push(destroyedData);
+      }
+
+      if (event.teamID === this.#RED_SIDE_ID) {
+        destroyedBuildings.redSide.push(destroyedData);
+      }
+    });
+
+    return destroyedBuildings;
   }
 }
 

@@ -39,6 +39,18 @@ exports.defineMatchDetailsData = catchAsync(async (req, res, next) => {
   // next();
   res.status(200).json({
     status: 'success',
+    data: {
+      participants: req.matchDetails.participants,
+      game_settings: req.matchDetails.game_settings,
+      wards: req.matchDetails.wards,
+      stats: req.matchDetails.stats,
+      feat_update: req.matchDetails.feat_update,
+      epic_kills: req.matchDetails.epic_kills,
+      champion_kills: req.matchDetails.champion_kills,
+      champion_select: req.matchDetails.champion_select,
+      bricks: req.matchDetails.bricks,
+      destroyed_buildings: req.matchDetails.destroyed_buildings,
+    },
   });
 });
 
