@@ -2,9 +2,13 @@ class MatchDetails {
   MatchEvents = null;
 
   participants = [];
-  gameSettings = null;
+  game_settings = null;
   wards = null;
   stats = null;
+  feat_update = null;
+  epic_kills = null;
+  champion_kills = null;
+  champion_select = null;
 
   constructor(MatchEvents) {
     this.MatchEvents = MatchEvents;
@@ -16,6 +20,9 @@ class MatchDetails {
     this.#defineWards();
     this.#defineStats();
     this.#defineFeatUpdate();
+    this.#defineEpicKills();
+    this.#defineChampionKills();
+    this.#defineChampSelect();
   }
 
   #defineParticipants() {
@@ -23,7 +30,7 @@ class MatchDetails {
   }
 
   #defineGameSettings() {
-    this.gameSettings = this.MatchEvents.gameSettings;
+    this.game_settings = this.MatchEvents.game_settings;
   }
 
   #defineWards() {
@@ -31,11 +38,23 @@ class MatchDetails {
   }
 
   #defineStats() {
-    this.stats = this.MatchEvents.statsUpdate;
+    this.stats = this.MatchEvents.stats_update;
   }
 
   #defineFeatUpdate() {
-    this.featUpdate = this.MatchEvents.featUpdate;
+    this.feat_update = this.MatchEvents.feat_update;
+  }
+
+  #defineEpicKills() {
+    this.epic_kills = this.MatchEvents.epic_kills;
+  }
+
+  #defineChampionKills() {
+    this.champion_kills = this.MatchEvents.champion_kills;
+  }
+
+  #defineChampSelect() {
+    this.champion_select = this.MatchEvents.champion_select;
   }
 }
 

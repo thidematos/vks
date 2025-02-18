@@ -1,3 +1,5 @@
+const { format } = require('date-fns');
+
 exports.extractData = (participant) => {
   const stats = {
     minions_killed: 0,
@@ -80,8 +82,6 @@ exports.extractData = (participant) => {
     }
   }
 
-  console.log(stats);
-
   return {
     puuid: participant.puuid,
     xp: participant.XP,
@@ -92,3 +92,5 @@ exports.extractData = (participant) => {
     stats: stats,
   };
 };
+
+exports.formatTimestamp = (timestamp) => format(timestamp, 'mm:ss');
