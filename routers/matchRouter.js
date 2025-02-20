@@ -11,13 +11,10 @@ router
     matchController.newMatchDetails,
     lolController.getVersions({ currentVersion: false, endpoint: false }),
     lolController.getChampions({ endpoint: false }),
-    matchController.defineMatchDetailsData
-
-    /*  
-    
-    matchController.extractMatch,
+    matchController.defineMatchDetailsData,
+    matchController.saveMatch,
     matchController.lookForNewPlayers,
-    matchController.createMatch */
+    matchController.dispatchResponse
   )
   .get(matchController.getMatchs)
   .delete(matchController.clearMatchs);

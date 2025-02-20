@@ -67,7 +67,6 @@ class MatchDetails {
 
   #defineDestroyedBuildings() {
     this.destroyed_buildings = this.MatchEvents.destroyed_buildings;
-    console.log(this.destroyed_buildings);
   }
 }
 

@@ -10,6 +10,7 @@ const playerSchema = new mongoose.Schema({
     type: String,
     enum: ['top', 'jungle', 'mid', 'adc', 'supp'],
   },
+  matchs: [Number],
 });
 
 const Player = mongoose.model('Player', playerSchema);

@@ -224,7 +224,7 @@ class MatchEvents {
     const featsEnum = {
       firstBlood: {
         name: 'kFirstBlood',
-        stacksToWin: 1,
+        stacksToWin: 3,
       },
       firstTurret: {
         name: 'kFirstTurret',
@@ -381,22 +381,16 @@ class MatchEvents {
           redSide: [],
         },
       },
+      blind: {
+        status: false,
+        blueSide: [],
+        redSide: [],
+      },
     };
-
-    const FIRST_ROTATION_LAST_PICK_TURN = 6;
-
-    const START_OF_SECOND_ROTATION_INDEX = 3;
 
     const postChampSelectEvent = this.#champ_select.find(
       (event) => event.gameState === 'POST_CHAMP_SELECT'
     );
-    const champSelectEvents = this.#champ_select.filter(
-      (event) => event.gameState === 'CHAMP_SELECT'
-    );
-
-    const lastFirstRotationPick = champSelectEvents
-      .filter((event) => event.pickTurn === FIRST_ROTATION_LAST_PICK_TURN)
-      .at(-1);
 
     const mapPickData = (player) => {
       return {
@@ -408,6 +402,32 @@ class MatchEvents {
         }),
       };
     };
+
+    //VERIFIES IF IS BLIND PICK -> There is no PRE_CHAMP_SELECT gameState
+    if (
+      this.#champ_select.find(
+        (event) => event.gameState === 'PRE_CHAMP_SELECT'
+      ) === undefined
+    ) {
+      selection.blind.status = true;
+      selection.blind.blueSide = postChampSelectEvent.teamOne.map(mapPickData);
+
+      selection.blind.redSide = postChampSelectEvent.teamTwo.map(mapPickData);
+
+      return selection;
+    }
+
+    const FIRST_ROTATION_LAST_PICK_TURN = 6;
+
+    const START_OF_SECOND_ROTATION_INDEX = 3;
+
+    const champSelectEvents = this.#champ_select.filter(
+      (event) => event.gameState === 'CHAMP_SELECT'
+    );
+
+    const lastFirstRotationPick = champSelectEvents
+      .filter((event) => event.pickTurn === FIRST_ROTATION_LAST_PICK_TURN)
+      .at(-1);
 
     selection.champSelection.firstRotation.blueSide =
       lastFirstRotationPick.teamOne

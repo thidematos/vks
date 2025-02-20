@@ -11,29 +11,3 @@ exports.getAllPlayers = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-exports.defineLanes = catchAsync(async (req, res, next) => {
-  const { lanes } = req.body;
-
-  console.log(lanes);
-
-  const puuids = Object.keys(lanes);
-
-  const promises = puuids.map(async (puuid) => {
-    const newPlayer = await Player.updateOne(
-      { puuid: puuid },
-      { lane: lanes[puuid] }
-    );
-
-    return newPlayer;
-  });
-
-  const updatedPlayers = await Promise.all(promises);
-
-  res.status(200).json({
-    status: 'succes',
-    data: {
-      players: updatedPlayers,
-    },
-  });
-});

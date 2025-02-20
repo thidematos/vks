@@ -1,108 +1,57 @@
 const mongoose = require('mongoose');
-const SchemaObjects = require('../Classes/SchemaObjects');
+const SchemaObjects = require('../Classes/Schemas');
 
-const schemaObjects = new SchemaObjects();
+const schemas = new SchemaObjects();
 
 const matchScheema = new mongoose.Schema({
-  wards: {
-    killed: schemaObjects.wards.killed,
-    placed: schemaObjects.wards.placed,
+  bricks: {
+    blueSide: [schemas.brick],
+    redSide: [schemas.brick],
   },
-  positions: {
-    teamOne: schemaObjects.positions.team,
-    teamTwo: schemaObjects.positions.team,
+  champion_kills: {
+    blueSide: [schemas.champion_kills],
+    redSide: [schemas.champion_kills],
   },
-  plates: {
-    destroyed: [
-      {
-        assistants: [Number],
-        belongsToTeamID: Number,
-        formattedTimestamp: String,
-        gameTimestamp: Number,
-        lane: String,
-        lastHitter: schemaObjects.completePlayerInfo,
+  champion_select: {
+    bans: [schemas.bans],
+    blind: {
+      blueSide: [schemas.pick],
+      redSide: [schemas.pick],
+      status: Boolean,
+    },
+    champSelection: {
+      firstRotation: {
+        blueSide: [schemas.pick],
+        redSide: [schemas.pick],
       },
-    ],
-    goldEarned: [
-      {
-        earner: schemaObjects.completePlayerInfo,
-        formattedTimestamp: String,
-        gameTimestamp: Number,
-        goldBounty: Number,
-        teamIDWhoDestroyed: Number,
+      secondRotation: {
+        blueSide: [schemas.pick],
+        redSide: [schemas.pick],
       },
-    ],
+    },
   },
-  picks: {
-    firstRotation: schemaObjects.picks.rotation,
-    secondRotation: schemaObjects.picks.rotation,
+  destroyed_buildings: {
+    blueSide: [schemas.destroyed_building],
+    redSide: [schemas.destroyed_building],
   },
-  perMinuteStats: {
-    teamOne: schemaObjects.perMinuteStats,
-    teamTwo: schemaObjects.perMinuteStats,
+  epic_kills: {
+    epics: [schemas.epic_kills.epics],
+    minorCamps: [schemas.epic_kills.minorCamps],
   },
+  feat_update: {
+    feats: [schemas.feats],
+    winner: String,
+  },
+  game_settings: schemas.game_settings,
   participants: {
-    allPlayers: [schemaObjects.completePlayerInfo],
-    teamOne: schemaObjects.participants.team,
-    teamTwo: schemaObjects.participants.team,
+    all: [schemas.player],
+    blueSide: [schemas.player],
+    redSide: [schemas.player],
   },
-  jungleMonstersKills: {
-    baron: [schemaObjects.jungleMonstersKills.monsterData],
-    buffCamps: {
-      blueCamp: [schemaObjects.jungleMonstersKills.monsterData],
-      redCamp: [schemaObjects.jungleMonstersKills.monsterData],
-    },
-    dragon: [schemaObjects.jungleMonstersKills.dragonData],
-    minorCamps: {
-      gromp: [schemaObjects.jungleMonstersKills.monsterData],
-      krug: [schemaObjects.jungleMonstersKills.monsterData],
-      raptor: [schemaObjects.jungleMonstersKills.monsterData],
-      wolf: [schemaObjects.jungleMonstersKills.monsterData],
-    },
-    riftHerald: [schemaObjects.jungleMonstersKills.monsterData],
-    scuttleCrab: [schemaObjects.jungleMonstersKills.monsterData],
-    voidGrubs: [schemaObjects.jungleMonstersKills.monsterData],
-    ruinousAtakhan: [schemaObjects.jungleMonstersKills.atakhanData],
-    voraciousAtakhan: [schemaObjects.jungleMonstersKills.atakhanData],
-  },
-  gold: {
-    at07: schemaObjects.goldAtTime,
-    at15: schemaObjects.goldAtTime,
-    at20: schemaObjects.goldAtTime,
-    at25: schemaObjects.goldAtTime,
-  },
-  gameSettings: {
-    gameID: Number,
-    name: String,
-    patch: String,
-    timestamp: String,
-    gameDurationTimestamp: Number,
-    gameDuration: String,
-    winningTeam: Number,
-  },
-  criticalTimes: {
-    at07: schemaObjects.criticalTimes.time,
-    at15: schemaObjects.criticalTimes.time,
-    at20: schemaObjects.criticalTimes.time,
-    at25: schemaObjects.criticalTimes.time,
-  },
-  buildingsDestroyed: {
-    inhibitor: [schemaObjects.buildingsDestroyed.inhibitor],
-    nexus: [schemaObjects.buildingsDestroyed.nexus],
-    turret: [schemaObjects.buildingsDestroyed.turret],
-  },
-  bans: {
-    firstRotation: [schemaObjects.bans.rotation],
-    secondRotation: [schemaObjects.bans.rotation],
-  },
-  splitScore: {
-    teamOne: [schemaObjects.splitScore.score],
-    teamTwo: [schemaObjects.splitScore.score],
-  },
-  featUpdates: {
-    kFirstBlood: [schemaObjects.featUpdate],
-    kEpicKill: [schemaObjects.featUpdate],
-    kFirstTurret: [schemaObjects.featUpdate],
+  stats: [schemas.stats],
+  wards: {
+    killed: [schemas.wards.killed],
+    placed: [schemas.wards.placed],
   },
 });
 

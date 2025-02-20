@@ -1,5 +1,4 @@
 const catchAsync = require('../utils/catchAsync');
-const MatchExtractor = require('./../Classes/MatchExtractor');
 const AppError = require('./../utils/appError');
 const Match = require('./../models/matchModel');
 const Player = require('../models/playerModel');
@@ -36,108 +35,97 @@ exports.newMatchDetails = catchAsync(async (req, res, next) => {
 exports.defineMatchDetailsData = catchAsync(async (req, res, next) => {
   req.matchDetails.defineData();
 
-  // next();
-  res.status(200).json({
-    status: 'success',
-    data: {
-      participants: req.matchDetails.participants,
-      game_settings: req.matchDetails.game_settings,
-      wards: req.matchDetails.wards,
-      stats: req.matchDetails.stats,
-      feat_update: req.matchDetails.feat_update,
-      epic_kills: req.matchDetails.epic_kills,
-      champion_kills: req.matchDetails.champion_kills,
-      champion_select: req.matchDetails.champion_select,
-      bricks: req.matchDetails.bricks,
-      destroyed_buildings: req.matchDetails.destroyed_buildings,
-    },
-  });
-});
-
-exports.extractMatch = catchAsync(async (req, res, next) => {
-  const matchAPI = new MatchExtractor({
-    stringJsonl,
-    champions: req.champions,
-    version: req.versions,
-  });
-
-  req.matchAPI = matchAPI;
-
   next();
 });
 
-exports.createMatch = catchAsync(async (req, res, next) => {
-  const { matchAPI } = req;
-
-  const newMatch = await Match.create({
-    wards: matchAPI.wards,
-    positions: matchAPI.positions,
-    plates: matchAPI.plates,
-    picks: matchAPI.picks,
-    perMinuteStats: matchAPI.perMinuteStats,
-    participants: matchAPI.participants,
-    jungleMonstersKills: matchAPI.jungleMonstersKills,
-    gold: matchAPI.gold,
-    gameSettings: matchAPI.gameSettings,
-    criticalTimes: matchAPI.criticalTimes,
-    buildingsDestroyed: matchAPI.buildingsDestroyed,
-    splitScore: matchAPI.splitScores,
-    bans: matchAPI.bans,
-    featUpdates: matchAPI.featUpdates,
-  });
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      bans: matchAPI.bans,
-      picks: matchAPI.picks,
-      plates: matchAPI.plates,
-      wards: matchAPI.wards,
-      participants: matchAPI.participants,
-      gameSettings: matchAPI.gameSettings,
-      jungleMonstersKills: matchAPI.jungleMonstersKills,
-      buildingsDestroyed: matchAPI.buildingsDestroyed,
-      splitScore: matchAPI.splitScores,
-      positions: matchAPI.positions,
-      gold: matchAPI.gold,
-      criticalTimes: matchAPI.criticalTimes,
-      perMinuteStats: matchAPI.perMinuteStats,
-      featUpdates: matchAPI.featUpdates,
-    },
-  });
-});
-
 exports.lookForNewPlayers = catchAsync(async (req, res, next) => {
-  const matchAPI = req.matchAPI;
-
   const dbPlayers = await Player.find({});
 
   const toAddDb = [];
 
-  matchAPI.participants.allPlayers.forEach((reqPlayer) => {
+  const toUpdateDB = [];
+
+  req.matchDetails.participants.all.forEach((reqPlayer) => {
     const curPlayer = dbPlayers.find(
       (dbPlayer) => dbPlayer.puuid === reqPlayer.puuid
     );
 
     if (!curPlayer) return toAddDb.push(reqPlayer);
+
+    toUpdateDB.push(curPlayer);
   });
 
-  const promises = toAddDb.map(async (player) => {
-    const createdPlayer = await Player.create({
-      puuid: player.puuid,
-      summonerName: player.summonerName,
-      lane: null,
+  if (toUpdateDB.length !== 0) {
+    const promises = toUpdateDB.map(async (player) => {
+      player.matchs.push(req.matchDetails.game_settings.gameID);
+
+      console.log(`Updated player: ${player.summonerName}`);
+
+      await player.save();
+
+      return;
     });
 
-    console.log(`Created new player: ${createdPlayer.summonerName}`);
+    await Promise.all(promises);
+  }
 
-    return createdPlayer;
-  });
+  if (toAddDb.length !== 0) {
+    const promises = toAddDb.map(async (player) => {
+      const createdPlayer = await Player.create({
+        puuid: player.puuid,
+        summonerName: player.summonerName,
+        lane: player.lane,
+        matchs: [req.matchDetails.game_settings.gameID],
+      });
 
-  await Promise.all(promises);
+      console.log(`Created new player: ${createdPlayer.summonerName}`);
+
+      return createdPlayer;
+    });
+
+    await Promise.all(promises);
+  }
 
   next();
 });
+
+exports.saveMatch = catchAsync(async (req, res, next) => {
+  console.log(req.matchDetails.game_settings.gameID);
+
+  const matchAlreadyExists = await Match.findOne({
+    'game_settings.gameID': req.matchDetails.game_settings.gameID,
+  });
+
+  if (matchAlreadyExists) {
+    return next(
+      new AppError('This match already exists in the Database!', 400)
+    );
+  }
+
+  const match = await Match.create({
+    participants: req.matchDetails.participants,
+    game_settings: req.matchDetails.game_settings,
+    wards: req.matchDetails.wards,
+    stats: req.matchDetails.stats,
+    feat_update: req.matchDetails.feat_update,
+    epic_kills: req.matchDetails.epic_kills,
+    champion_kills: req.matchDetails.champion_kills,
+    champion_select: req.matchDetails.champion_select,
+    bricks: req.matchDetails.bricks,
+    destroyed_buildings: req.matchDetails.destroyed_buildings,
+  });
+
+  req.match = match;
+
+  next();
+});
+
+exports.dispatchResponse = (req, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    data: req.match,
+  });
+};
 
 exports.getMatchs = catchAsync(async (req, res, next) => {
   const matchs = await Match.find({});
