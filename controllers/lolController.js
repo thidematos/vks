@@ -4,25 +4,30 @@ const lolApi = require('./../services/lolApi');
 exports.getVersions = ({ endpoint, currentVersion }) => {
   return catchAsync(async (req, res, next) => {
     const versions = await lolApi.getVersions();
+    const usedVersions = [];
 
-    const version = currentVersion
-      ? versions.at(0)
-      : versions.find((version) =>
-          version.startsWith(req.matchDetails.MatchEvents.version)
-        );
+    req.allMatchDetails.forEach((MatchDetails) => {
+      const version = currentVersion
+        ? versions.at(0)
+        : versions.find((version) =>
+            version.startsWith(MatchDetails.MatchEvents.version)
+          );
 
-    console.log(version);
+      MatchDetails.MatchEvents.definePatch(version);
+
+      usedVersions.push(version);
+    });
 
     if (!endpoint) {
-      req.version = version;
-      req.matchDetails.MatchEvents.definePatch(version);
+      req.versions = usedVersions;
+
       return next();
     }
 
     res.status(200).json({
       status: 'success',
       data: {
-        version,
+        versions,
       },
     });
   });
@@ -30,19 +35,25 @@ exports.getVersions = ({ endpoint, currentVersion }) => {
 
 exports.getChampions = ({ endpoint }) => {
   return catchAsync(async (req, res, next) => {
-    const currentVersion = req.version;
+    const promises = req.versions.map(async (version) => {
+      const champions = await lolApi.getChampions(version);
+      return champions;
+    });
 
-    const champions = await lolApi.getChampions(currentVersion);
+    const allChampions = await Promise.all(promises);
 
     if (!endpoint) {
-      req.matchDetails.MatchEvents.defineChampions(champions);
+      req.allMatchDetails.forEach((MatchDetails, ind) => {
+        MatchDetails.MatchEvents.defineChampions(allChampions[ind]);
+      });
+
       return next();
     }
 
     res.status(200).json({
       status: 'success',
       data: {
-        champions,
+        allChampions,
       },
     });
   });

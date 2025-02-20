@@ -4,16 +4,13 @@ import CustomToast from "../../ui/CustomToast";
 import { createMatchApi } from "../../services/matchApi";
 import { useNavigate } from "react-router-dom";
 import { useIsLoading } from "../../hooks/useIsLoading";
-import { useRemote } from "./../../context/RemoteProvider";
 
-function usePostMatch() {
+function useCreateMatch() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { setRemoteState } = useRemote();
-
   const { mutate: createMatch, isPending: isCreatingMatch } = useMutation({
-    mutationFn: (match) => createMatchApi(match),
+    mutationFn: (formWithFiles) => createMatchApi(formWithFiles),
     onSuccess: (data) => {
       console.log(data);
       toast.custom((t) => (
@@ -21,8 +18,6 @@ function usePostMatch() {
       ));
 
       queryClient.invalidateQueries(["matchs"]);
-
-      setRemoteState(data);
 
       navigate(`/matchs`);
     },
@@ -37,4 +32,4 @@ function usePostMatch() {
   return { createMatch, isCreatingMatch };
 }
 
-export { usePostMatch };
+export { useCreateMatch };

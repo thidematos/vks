@@ -1,10 +1,8 @@
 import { useRef } from "react";
-import { useJsonUpload } from "../context/JsonUploadProvider";
-import { useStepper } from "../context/StepperProvider";
+import { useUpload } from "./context/UploadProvider";
 
 function DragZone() {
-  const { uploadJson } = useJsonUpload();
-  const { stepper } = useStepper();
+  const { attachJsonlFiles } = useUpload();
 
   function allowDropzone(e) {
     e.stopPropagation();
@@ -12,10 +10,6 @@ function DragZone() {
   }
 
   const inputRef = useRef(null);
-
-  const currentStep = stepper.steps[stepper.currentStep];
-
-  if (stepper.isComplete) return null;
 
   return (
     <label
@@ -25,21 +19,23 @@ function DragZone() {
       onDragOver={allowDropzone}
       onDrop={(e) => {
         allowDropzone(e);
-
-        uploadJson(e.dataTransfer.files[0], currentStep?.id);
+        console.log(e.dataTransfer.files);
+        attachJsonlFiles(e.dataTransfer.files);
         inputRef.current.value = null;
       }}
     >
       <p className="font-montserrat text-xs text-slate-500 underline underline-offset-1">
-        Drop or click to select a {currentStep?.id.toUpperCase()}
+        Drop or click to select a JSONL file
       </p>
       <input
         ref={inputRef}
         type="file"
+        multiple={true}
         id="input_json"
         className="hidden"
         onChange={(e) => {
-          uploadJson(e.target.files[0], currentStep?.id);
+          console.log(e.target.files);
+          attachJsonlFiles(e.target.files);
           inputRef.current.value = null;
         }}
       />

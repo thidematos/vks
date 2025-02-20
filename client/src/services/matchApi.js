@@ -1,14 +1,8 @@
 import axios from "axios";
 import { format } from "date-fns";
 
-export async function createMatchApi({ stringJson, stringJsonl }) {
-  const res = await axios.post("/api/v1/match", {
-    match: {
-      stringJson,
-      stringJsonl,
-    },
-  });
-
+export async function createMatchApi(formWithFiles) {
+  const res = await axios.post("/api/v1/match", formWithFiles);
   return res.data.data;
 }
 
