@@ -69,8 +69,8 @@ function Content() {
       />
 
       <SidebarIcon
-        to={"/players"}
-        writing={"Players"}
+        to={"/team-stats/data"}
+        writing={"Stats"}
         img={"players-icon.png"}
       />
     </div>

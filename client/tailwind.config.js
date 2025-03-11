@@ -14,6 +14,8 @@ export default {
       colors: {
         blueTeam: "#238dca",
         redTeam: "#9e2c25",
+        white_background: "#FDFCFC",
+        grey_background: "#EFEFEF",
       },
     },
   },

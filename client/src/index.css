@@ -67,7 +67,7 @@
 }
 
 .active {
-  @apply scale-110 bg-purple-600;
+  @apply scale-110 rounded-lg bg-purple-600 px-3 py-1 text-slate-100 shadow-sm;
 }
 
 .slidecontainer {

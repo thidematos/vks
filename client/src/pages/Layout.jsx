@@ -27,7 +27,6 @@ function Layout() {
           <Outlet />
           <Loader />
         </div>
-        <Modal />
       </ModalProvider>
     </>
   );

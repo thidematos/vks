@@ -167,7 +167,7 @@ exports.saveMatch = catchAsync(async (req, res, next) => {
 exports.dispatchResponse = (req, res, next) => {
   res.status(200).json({
     status: 'success',
-    data: req.matchs,
+    data: { match: req.matchs },
   });
 };
 

@@ -5,11 +5,3 @@ export async function getPlayersAPI() {
 
   return res.data.data.players;
 }
-
-export async function postPlayersLanesAPI(lanes) {
-  const res = await axios.post("/api/v1/players/define-lanes", {
-    lanes: lanes,
-  });
-
-  return res.data.data.players;
-}

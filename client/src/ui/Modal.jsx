@@ -1,6 +1,8 @@
 import { useModal } from "../context/ModalProvider";
 
 function Modal() {
+  //<Modal/> Deve ser incluido em cada page/screen que utilizar o Modal. O Provider é universal.
+
   const { isOpen, component, canClose, closeModal } = useModal();
 
   if (!isOpen) return null;
